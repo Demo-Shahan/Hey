@@ -50,4 +50,11 @@ def reply(query):
     Question: {query}
 
     """
-    return chain.run(input_documents=docs, question=query2)
+    try:
+        rep = chain.run(input_documents=docs, question=query2)
+    except Exception as e:
+        rep = 'ExceptionError: Looks like invalid api-key'
+    return rep
+    
+
+    
