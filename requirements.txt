@@ -1,0 +1,9 @@
+langchain --upgrade
+python-dotenv
+chromadb
+tiktoken
+pinecone-client
+openai
+gdown
+langchain_pinecone
+chainlit
