@@ -1,4 +1,4 @@
-langchain --upgrade
+langchain 
 python-dotenv
 chromadb
 tiktoken
