@@ -18,6 +18,7 @@ from langchain.chat_models import ChatOpenAI
 from langchain.chains.question_answering import load_qa_chain
 import langchain_pinecone
 import os
+from openai import OpenAI
 
 load_dotenv()
 
@@ -39,6 +40,7 @@ chain = load_qa_chain(llm, chain_type="stuff")
 
 def reply(query):
     docs = vectorstore.similarity_search(query)
+    doclist = [doc.page_content for doc in docs]
 
     query2 = f"""  
 
@@ -51,7 +53,16 @@ def reply(query):
 
     """
     try:
-        rep = chain.run(input_documents=docs, question=query2)
+        client = OpenAI()
+        completion = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "system", "content": "You are an expert bibliophile and job is to answer questions about from the documents provided by the user. Make sure to respond in the same langugae the question is asked in"},
+                      {"role": "user", "content": f"Here is the related content: {doclist} and try to answer my question from using this document. \nQuestion: {query}"}
+                      ]
+                      )
+        rep = completion.choices[0].message.content
+
+
     except Exception as e:
         rep = 'ExceptionError: Looks like invalid api-key'
     return rep
